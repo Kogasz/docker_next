@@ -14,6 +14,8 @@ import { Timer } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import  Deleteitem  from '@/components/deleteitem';
+import EditItem from '@/components/edit';
 
 const pb = new PocketBase('http://172.16.15.135:8080');
 
@@ -81,15 +83,30 @@ const [zdjecia,setzdjecia] = useState(null)
     setzdjecia(e.target.files[0])
   }
 
-  const handledelete = async (id) => {
-    try {
-      await pb.collection('samochody').delete(id)
-      setsamochody((prev) => prev.filter((samochod) => samochod.id !== id));
-    } catch (err) {
-      console.log(err);
-    }
-  }  
+  const deleted = (id)=>{
+      setsamochody((prev)=>(
+        prev.filter((el)=>{
+          return el.id != id
+        }
+          )
+      ))
+  }
 
+  const updated = (item)=>{
+    console.log(item)
+    var index=null
+    var tmpSamochody = [...samochody]
+
+    for(let i in samochody){
+      if(samochody[i].id == item.id){
+        index = i
+      }
+    }
+
+    tmpSamochody[index] = item
+    setsamochody(tmpSamochody)
+    console.log("index: "+index)
+  }
 
   return (
     <div>
@@ -111,12 +128,17 @@ const [zdjecia,setzdjecia] = useState(null)
     />
     </CardContent>
     <CardFooter>
-      <div className='flex justify-center w-full mt-5'>
+      <div className='w-full flex justify-between'>
+        <div className='mt-3 flex flex-row gap-1'>
+          <Deleteitem id={samochody.id} ondeleted={deleted}/>
+          <EditItem item={samochody} onupdated={updated}/>
+          </div>
+        <div className='flex justify-center mt-5'>
         <Timer/>
         <p>Czas parkowania: </p>
         {samochody.czas_parkowania+"min"}
+        </div>
       </div>
-      <Button className="mt-5" onClick={() => handledelete(samochody.id)}>Usuń</Button>
     </CardFooter>
    </Card>
   ))
