@@ -34,13 +34,17 @@ import { Button } from "@/components/ui/button";
 import Deleteitem from "@/components/deleteitem";
 import EditItem from "@/components/edit";
 
-const pb = new PocketBase('http://192.168.0.104:8080');
+const pb = new PocketBase('http://172.16.15.135:8080/');
 
 export default function Home() {
 
   const [games,setgames] = useState(null) 
-  const [dane,setdane] = useState({nazwa: null,opis: null,cena:null,dostepnosc:null})
+  const [dane,setdane] = useState({nazwa: null,opis: null,cena:null,dostepnosc:false})
   const [zdjecia,setzdjecia] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
 
 
   useEffect(()=>{
@@ -94,7 +98,7 @@ const handlesubmit = async ()=>{
   }catch(error){
 
   }
-
+  handleClose();
 }
 const handlezdjecia = (e)=>{
   console.log(e)
@@ -116,6 +120,22 @@ const updated = (item)=>{
   setgames(tmpGames)
   console.log("index: "+index)
 }
+const changes = async (item)=>{
+  const data={
+    dostepnosc:!item.dostepnosc
+  }
+  const record = await pb.collection("games").update(item.id,data)
+  var tmpArr = [...games]
+  var index = null
+  for(let i in tmpArr){
+    if(tmpArr[i].id==record.id){
+      index=i
+      tmpArr[i] = record
+    }
+  }
+  setgames(tmpArr)
+}
+
 
   return (
     <div  className='flex w-full justify-center flex-wrap gap-5'>
@@ -123,7 +143,7 @@ const updated = (item)=>{
       {console.log(games)}
      { games && 
      games.map((games)=>(
-      <Card className="w-[300px] b-[3px]">
+      <Card className="w-[300px] b-[3px] border-black">
       <CardHeader className="flex m-0 p-0 w-[300px] h-[200px] relative">
       <Image
           src={pb.files.getUrl(games, games.zdjecie)}
@@ -145,21 +165,23 @@ const updated = (item)=>{
           <DropdownMenuContent>
             <DropdownMenuLabel className="flex">MENU</DropdownMenuLabel>
             <DropdownMenuSeparator  />
-            <DropdownMenuItem ><Deleteitem id={games.id} ondeleted={deleted}/></DropdownMenuItem>
-            <DropdownMenuItem><EditItem item={games} onupdated={updated}/></DropdownMenuItem>
+            <div className="flex flex-row gap-2">
+            <DropdownMenuItem asChild><Deleteitem id={games.id} ondeleted={deleted}/></DropdownMenuItem>
+            <DropdownMenuItem asChild><EditItem item={games} onupdated={updated}/></DropdownMenuItem>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
-          <h1>Dostępność: <Switch checked={games.dostepnosc}/></h1>
+          <h1>Dostępność: <Switch checked={games.dostepnosc} onCheckedChange={()=> { changes(games) }}/></h1>
         </div>
       </CardFooter>
     </Card>
          ))
 }
     </div>
-    <Card>
+    <Card className="border-black">
       <CardContent>
-      <Sheet>
-        <SheetTrigger><Plus size={300}/></SheetTrigger>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger onClick={handleOpen}><Plus size={300}/></SheetTrigger>
         <SheetContent key={"right"}>
         <div className='mt-5 flex flex-col w-full items-center flex-wrap gap-5'>
         <div className="grid w-full max-w-sm items-center gap-1.5">

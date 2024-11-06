@@ -2,14 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-input:focus {
-  user-select: none;
-}
 
-/* Zablokuj zaznaczenie tekstu w dowolnym przypadku */
-input::selection {
-  background: transparent;
-}
 
 @layer base {
   :root {

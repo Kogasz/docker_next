@@ -17,7 +17,7 @@ import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 
 export default function EditItem({ item, onupdated }) {
-    const pb = new PocketBase("http://192.168.0.104:8080");
+    const pb = new PocketBase("http://172.16.15.135:8080/");
 
     const [dane, setdane] = useState({
         nazwa: null,
@@ -101,15 +101,6 @@ export default function EditItem({ item, onupdated }) {
                     id="cena"
                     placeholder="Cena"
                 />
-            </div>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="dostepnosc">Dostepnosc</Label>
-                <Switch
-                    checked={dane.dostepnosc}
-                    onCheckedChange={(checked) => handleinpitchange("dostepnosc", checked)}
-                    id="dostepnosc"
-                />
-
             </div>
             <div className="m-0 p-0 ml-[34%] w-[100px] h-[50px] relative">
                 <Image

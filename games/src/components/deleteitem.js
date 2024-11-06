@@ -14,7 +14,7 @@ import { Trash2 } from "lucide-react"
 import PocketBase from 'pocketbase';
   
   export default function Deleteitem({id, ondeleted}) {
-    const pb = new PocketBase('http://192.168.0.104:8080');
+    const pb = new PocketBase('http://172.16.15.135:8080/');
 
 
     const handledelete = async ()=>{
