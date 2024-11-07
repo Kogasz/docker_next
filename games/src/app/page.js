@@ -86,8 +86,9 @@ const handlesubmit = async ()=>{
   formData.append("opis",dane.opis)
   formData.append("cena",dane.cena)
   formData.append("dostepnosc",dane.dostepnosc)
+  if(zdjecia){
   formData.append("zdjecie", zdjecia)
-
+  }
 
   try{
     const record = await pb.collection('games').create(formData);

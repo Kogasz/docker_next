@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import  Deleteitem  from '@/components/deleteitem';
 import EditItem from '@/components/edit';
+import AvatarDemo from "@/components/user_avatar";
 
 const pb = new PocketBase('http://172.16.15.135:8080');
 
@@ -25,6 +26,15 @@ export default function Home() {
 const [samochody,setsamochody] = useState(null)
 const [dane,setdane] = useState({marka: null,model: null,czas_parkowania:null})
 const [zdjecia,setzdjecia] = useState(null)
+const [user,setuser] = useState(null)
+
+useEffect(()=>{
+  setuser(pb.authStore.model)
+},[])
+
+const login = async ()=>{
+  setuser(pb.authStore.model)
+}
 
   useEffect(()=>{
     
@@ -110,43 +120,50 @@ const [zdjecia,setzdjecia] = useState(null)
 
   return (
     <div>
-<div className='flex w-full justify-center flex-wrap gap-5'>
-{
-  samochody && 
-
-  samochody.map((samochody)=>(
-    <Card className="w-[400px] border-[3px]">
-    <CardTitle className='text-center'>{samochody.marka}</CardTitle>
-    <CardDescription className='text-center'>{samochody.model}</CardDescription>
-    <CardContent className="m-0 p-0 w-[390px] h-[200px] relative">
-    <Image
-    src={pb.files.getUrl(samochody, samochody.zdjecie)}
-    alt={samochody.zdjecie}
-    objectFit='cover'
-    fill={true}
-    className='rounded-md'
-    />
-    </CardContent>
-    <CardFooter>
-      <div className='w-full flex justify-between'>
-        <div className='mt-3 flex flex-row gap-1'>
-          <Deleteitem id={samochody.id} ondeleted={deleted}/>
-          <EditItem item={samochody} onupdated={updated}/>
-          </div>
-        <div className='flex justify-center mt-5'>
-        <Timer/>
-        <p>Czas parkowania: </p>
-        {samochody.czas_parkowania+"min"}
-        </div>
+      <div className="ml-5 mt-5 w-[100px] h-[100px]">
+      <AvatarDemo onlogin={login} user={user} setuser={setuser}/>
+    </div>
+    {
+      user && 
+      <div className='flex w-full justify-center flex-wrap gap-5'>
+      {
+        samochody && 
+      
+        samochody.map((samochody)=>(
+          <Card className="w-[400px] border-[3px]">
+          <CardTitle className='text-center'>{samochody.marka}</CardTitle>
+          <CardDescription className='text-center'>{samochody.model}</CardDescription>
+          <CardContent className="m-0 p-0 w-[390px] h-[200px] relative">
+          <Image
+          src={pb.files.getUrl(samochody, samochody.zdjecie)}
+          alt={samochody.zdjecie}
+          objectFit='cover'
+          fill={true}
+          className='rounded-md'
+          />
+          </CardContent>
+          <CardFooter>
+            <div className='w-full flex justify-between'>
+              <div className='mt-3 flex flex-row gap-1'>
+                <Deleteitem id={samochody.id} ondeleted={deleted}/>
+                <EditItem item={samochody} onupdated={updated}/>
+                </div>
+              <div className='flex justify-center mt-5'>
+              <Timer/>
+              <p>Czas parkowania: </p>
+              {samochody.czas_parkowania+"min"}
+              </div>
+            </div>
+          </CardFooter>
+         </Card>
+        ))
+      
+      }
       </div>
-    </CardFooter>
-   </Card>
-  ))
-
-}
-</div>
+    }
 
       <div className='mt-5 flex flex-col w-full items-center flex-wrap gap-5'>
+
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="marka">Marka</Label>
           <Input onChange={(e)=> {handleinpitchange("marka",e)}} type="text" id="marka" placeholder="Marka" />
