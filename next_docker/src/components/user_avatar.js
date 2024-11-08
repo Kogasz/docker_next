@@ -19,7 +19,6 @@ import { Login_form } from "./forml";
   export default function AvatarDemo({onlogin,user,setuser}) {
     const pb = new PocketBase('http://172.16.15.135:8080');
 
-    //const [user,setuser] = useState(null)
 
     useEffect(()=>{
         setuser(pb.authStore.model)

@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button"
 import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -12,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useEffect, useState } from "react"
 import PocketBase from 'pocketbase';
+import { NewUser } from "./new_user"
 
 export function Login_form({onlogin}) {
     const pb = new PocketBase('http://172.16.15.135:8080');
@@ -50,15 +57,22 @@ export function Login_form({onlogin}) {
     
 
   return (
+    
     <Dialog open={open} onOpenChange={setopen}>
       <DialogTrigger>
         <h1 className="pl-[80%] underline">Login </h1>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+        <Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="login">Log in</TabsTrigger>
+    <TabsTrigger value="signin">Sign In</TabsTrigger>
+  </TabsList>
+  <TabsContent value="login">   
+  <DialogHeader>
           <DialogTitle>Login</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
+        </DialogHeader>     
+    <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               User
@@ -81,11 +95,14 @@ export function Login_form({onlogin}) {
             />
           </div>
         </div>
-        <DialogFooter>
-            <div className="flex flex-col">
+        <div className="flex flex-col">
           <Button onClick={handlesubmit}>Submit</Button>
-          {eror && <p className="mt-2">Nie udało się zalogować</p> }
+          {eror && <p className="mt-2 text-center text-red-500">Nie udało się zalogować</p> }
           </div>
+        </TabsContent>
+  <TabsContent value="signin"><NewUser setOpen={setopen}/></TabsContent>
+</Tabs>
+        <DialogFooter>
         </DialogFooter>
       </DialogContent>
     </Dialog>
