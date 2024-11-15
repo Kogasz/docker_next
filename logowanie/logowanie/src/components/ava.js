@@ -62,6 +62,7 @@ export default function Ava_log() {
       <div className="ml-5 flex gap-6">
         <Link href="/">Main</Link>
         <Link href="/strona2">Strona2</Link>
+        <Link href="/chat1">Chat</Link>
       </div>
       <div>
         <DropdownMenu>
